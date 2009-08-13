@@ -1,13 +1,15 @@
-;;; mythryl-mode.el --- mode for editing Mythryl code
+;;; mythryl-mode.el --- Major mode for editing Mythryl code
 
 ;; Copyright (C) 2009 Phil Rand <philrand@gmail.com>
+
+;; Mythryl-mode is not part of emacs.
 
 ;; Mythryl-mode is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
-;; mythryl-mode is distributed in the hope that it will be useful,
+;; Mythryl-mode is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
@@ -20,10 +22,29 @@
 ;;; Commentary:
 
 ;; A major mode for editing the Mythryl programming language.
+;;
+;; The current release is not very useful, but it does recognise
+;; mythryl comments beginning with # and ending with newline.
+;;
+;; This version of mythryl mode is derived from Stefan Monnier's 
+;; sml-mode.  See http://www.iro.umontreal.ca/~monnier/elisp/, but
+;; as of August 2009, the instructions on that page for accessing
+;; the svn repository were incorrect.
+;;
+;; To use this mode, install the elisp files from the sml-mode
+;; suite from the above URL somewhere in your elisp load path,
+;; along with this file.  Insert the expression:
+;;    (load "mythryl-mode")
+;; Somewhere in your .emacs file.
+;;
+;; I've been invoking it with "M-x mythryl-mode" when editing a 
+;; mythryl source file, but when it becomes actually useful for
+;; more than debuging itself I'll need to remind myself how to
+;; make emacs recognise mythryl source and enter the mode 
+;; automatically.
 
 ;;; Code:
 
-(require 'cl)
 (require 'sml-mode)
 
 (define-derived-mode mythryl-mode sml-mode
