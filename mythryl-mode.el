@@ -23,3 +23,11 @@
 
 ;;; Code:
 
+(require 'cl)
+(require 'sml-mode)
+
+(define-derived-mode mythryl-mode sml-mode
+  "Mythryl"
+  "Major mode for the Mythryl programming language."
+  (modify-syntax-entry ?\# "<" mythryl-mode-syntax-table)
+  (modify-syntax-entry ?\n ">#" mythryl-mode-syntax-table))
