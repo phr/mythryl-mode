@@ -1,6 +1,10 @@
 ;;; mythryl-mode.el --- Major mode for editing Mythryl code
 
 ;; Copyright (C) 2009 Phil Rand <philrand@gmail.com>
+;;
+;; Largly cribbed from Stefan Monnier's sml-mode. See:
+;;    http://www.iro.umontreal.ca/~monnier/elisp/
+;;
 
 ;; Mythryl-mode is not part of emacs.
 
@@ -23,8 +27,9 @@
 
 ;; A major mode for editing the Mythryl programming language.
 ;;
-;; The current release is not very useful, but it does recognise
-;; mythryl comments beginning with # and ending with newline.
+;; This release is still not very useful, but it does now do crude
+;; keyword highlighting, and parenthetical matching for (), {}, and
+;; [].
 ;;
 ;; This version of mythryl mode is derived from Stefan Monnier's 
 ;; sml-mode.  See http://www.iro.umontreal.ca/~monnier/elisp/, but
@@ -45,10 +50,59 @@
 
 ;;; Code:
 
-(require 'sml-mode)
+(require 'sml-mode) ; for defsyntax, fontlock stuff
 
+(defsyntax mythryl-mode-syntax-table
+  `((?\# . "<")
+    (?\n . ">#)")
+    (?\( . "()")
+    (?\{ . "(}")
+    (?\[ . "(]")
+    (":=#&@\\!#^-.%+?/*~>~:?|" . "."))
+  "The syntax table used in `mythryl-mode'.")
+
+(defvar mythryl-mode-hook nil
+  "*Run upon entering `mythryl-mode'.
+This is a good place to put your preferred key bindings.")
+
+; For now, we'l derive from sml-mode and live with some inconsistencies.
 (define-derived-mode mythryl-mode sml-mode
   "Mythryl"
   "Major mode for the Mythryl programming language."
-  (modify-syntax-entry ?\# "<" mythryl-mode-syntax-table)
-  (modify-syntax-entry ?\n ">#" mythryl-mode-syntax-table))
+  (make-local-variable 'font-lock-defaults)
+  (setq font-lock-defaults
+	(list (list (regexp-opt
+		     (list "abstype" "also" "and" "api" "as" "case" "class" "elif"
+			   "else" "end" "eqtype" "esac" "except" "exception" "fi"
+			   "field" "fn" "for" "fprintf" "fun" "generic" "generic_api"
+			   "herein" "if" "include" "infix" "infixr" "lazy" "method"
+			   "my" "nonfix" "op" "or" "overload" "package" "printf"
+			   "raise" "rec" "sharing" "sprintf" "stipulate" "then"
+			   "type" "val" "where" "with" "withtype"))
+		    1 font-lock-keyword-face)
+	      nil t)))
+
+
+(defvar mythryl-mode-hook nil
+  "*Run upon entering `mythryl-mode'.
+This is a good place to put your preferred key bindings.")
+
+(defconst mythryl-font-lock-keywords
+  (purecopy
+
+; For now, we'l derive from sml-mode and live with some inconsistencies.
+(define-derived-mode mythryl-mode sml-mode
+  "Mythryl"
+  "Major mode for the Mythryl programming language."
+  (make-local-variable 'font-lock-defaults)
+  (setq font-lock-defaults
+	(list (list (regexp-opt
+		     (list "abstype" "also" "and" "api" "as" "case" "class" "elif"
+			   "else" "end" "eqtype" "esac" "except" "exception" "fi"
+			   "field" "fn" "for" "fprintf" "fun" "generic" "generic_api"
+			   "herein" "if" "include" "infix" "infixr" "lazy" "method"
+			   "my" "nonfix" "op" "or" "overload" "package" "printf"
+			   "raise" "rec" "sharing" "sprintf" "stipulate" "then"
+			   "type" "val" "where" "with" "withtype"))
+		    1 font-lock-keyword-face)
+	      nil t)))
