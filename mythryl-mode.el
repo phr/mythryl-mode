@@ -50,7 +50,22 @@
 
 ;;; Code:
 
-(require 'sml-mode) ; for defsyntax, fontlock stuff
+;(require 'sml-mode) ; for defsyntax, fontlock stuff
+;; defsyntax ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;           (stolen from sml-mode)
+(defun custom-create-syntax (css args)
+  (let ((st (make-syntax-table (cadr (memq :copy args)))))
+    (dolist (cs css)
+      (let ((char (car cs))
+	    (syntax (cdr cs)))
+	(if (sequencep char)
+	    (mapcar* (lambda (c) (modify-syntax-entry c syntax st)) char)
+	  (modify-syntax-entry char syntax st))))
+    st))
+
+(defmacro defsyntax (st css doc &rest args)
+  `(defvar ,st (custom-create-syntax ,css ,(cons 'list args)) ,doc))
+
 
 (defsyntax mythryl-mode-syntax-table
   `((?\# . "<")
@@ -66,20 +81,41 @@
 This is a good place to put your preferred key bindings.")
 
 ; For now, we'l derive from sml-mode and live with some inconsistencies.
-(define-derived-mode mythryl-mode sml-mode
+(define-derived-mode mythryl-mode fundamental-mode
   "Mythryl"
   "Major mode for the Mythryl programming language."
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults
-	(list (list (regexp-opt
-		     (list "abstype" "also" "and" "api" "as" "case" "class" "elif"
-			   "else" "end" "eqtype" "esac" "except" "exception" "fi"
-			   "field" "fn" "for" "fprintf" "fun" "generic" "generic_api"
-			   "herein" "if" "include" "infix" "infixr" "lazy" "method"
-			   "my" "nonfix" "op" "or" "overload" "package" "printf"
-			   "raise" "rec" "sharing" "sprintf" "stipulate" "then"
-			   "type" "val" "where" "with" "withtype"))
-		    1 font-lock-keyword-face)
-	      nil t)))
+	(list 
+	 ;; KEYWORDS
+	 (list
+	  (regexp-opt
+	   (list "abstype" "also" "and" "api" "as" "case" "class" "elif"
+		 "else" "end" "eqtype" "esac" "except" "exception" "fi"
+		 "field" "fn" "for" "fprintf" "fun" "generic" "generic_api"
+		 "herein" "if" "include" "infix" "infixr" "lazy" "method"
+		 "my" "nonfix" "op" "or" "overload" "package" "printf"
+		 "raise" "rec" "sharing" "sprintf" "stipulate" "then"
+		 "type" "val" "where" "with" "withtype"))
+	  1 font-lock-keyword-face)
+	 ;; KEYWORDS-ONLY
+	 nil
+	 ;; CASE-FOLD
+	 t
+	 ;; SYNTAX-ALIST
+	 '((?\# . "< ")
+	   (?\n . ">")
+	   (?\/ . ". 14b")
+	   (?\* . ". 23b")
+	   (?\( . "()")
+	   (?\{ . "(}")
+	   (?\[ . "(]")
+	   (":=&@\\!^-.%+?~>~:?|" . "."))
+	 ; SYNTAX-BEGIN
+	 nil
+	 ; OTHER-VARS
+	 )))
+  ;(make-local-variable 'font-lock-syntax-table)
+  ;(setq font-lock-syntax-table mythryl-syntax-table))
 
 
