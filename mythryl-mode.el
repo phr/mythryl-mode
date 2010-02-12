@@ -77,7 +77,8 @@
     (((class grayscale))                (:foreground "black"))
     (t                                  ()))
   "Face used for package identifiers in mythryl
-Example: "pkg1::pkg2::""
+
+Example: pkg1::pkg2::"
   :group 'mythryl)
 
 (defvar mythryl-mode-structure-face 'mythryl-mode-structure-face)
@@ -122,7 +123,7 @@ This is a good place to put your preferred key bindings.")
 	(eval-when-compile
 	  (concat
 	   "\\(\\([]}); ]\\|"
-	   (regexp-opt (mapcar 'symbol-name '(end fi esac then elif else)) 'words)
+	   (regexp-opt (mapcar 'symbol-name '(end fi esac then herein elif else)) 'words)
 	   "\\) *\\)+")))
        (goto-char (match-end 0))))
 
@@ -211,7 +212,8 @@ This is a good place to put your preferred key bindings.")
 			      (t 0)))
 			    ((eq p ?h)
 			     (cond
-			      ((looking-at "\\<herein\\>") +4)
+			      ((looking-at "\\<herein\\>")
+			       (let ((n ln)) (setq ln 0) (* n 4)))
 			      (t 0)))
 			    ((eq p ?i)
 			     (cond
